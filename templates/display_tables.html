@@ -11,10 +11,10 @@
         <input type="text" name="search" placeholder="Search...">
         <input type="submit" value="Search">
     </form>
-    
+
     {% for table_name, data in tables.items() %}
         <h2>{{ table_name }}</h2>
-        
+
         {% set page = data.page %}
         {% set per_page = data.per_page %}
         {% set total_pages = data.total_pages %}
@@ -23,30 +23,28 @@
             <a href="{{ url_for('display_tables', search=search_query, page=i) }}">{{ i }}</a>
         {% endfor %}
 
-        <!-- Display the table as before -->
-       <!-- Inside the table loop in display_tables.html -->
-
-<table border="1">
-    <!-- ... (existing code) ... -->
-    <tr>
-        {% for column in data.columns %}
-            <th>{{ column }}</th>
-        {% endfor %}
-        <th>Actions</th>  <!-- Add a column for actions (Edit button) -->
-    </tr>
-    {% for row in data.rows %}
-        <tr>
-            {% for value in row %}
-                <td>{{ value }}</td>
+        <table border="1">
+            <tr>
+                {% for column in data.columns %}
+                    <th>{{ column }}</th>
+                {% endfor %}
+                <th>Actions</th>
+            </tr>
+            {% for row in data.rows %}
+                <tr>
+                    {% for value in row %}
+                        <td>
+                            <a href="{{ url_for('edit_cell', table_name=table_name, row_id=row[0]|int, column_name=data.columns[loop.index0]) }}">
+                                {{ value }}
+                            </a>
+                        </td>
+                    {% endfor %}
+                    <td>
+                        <a href="{{ url_for('edit_row', table_name=table_name, row_id=row[0]|int) }}">Edit</a>
+                    </td>
+                </tr>
             {% endfor %}
-            <td>
-                <a href="{{ url_for('edit_row', table_name=table_name, row_id=row[0]|int) }}">Edit</a>
-            </td>
-        </tr>
-    {% endfor %}
-</table>
-
-<!-- ... (existing code) ... -->
+        </table>
 
         <br>
         <a href="{{ url_for('add_row', table_name=table_name) }}">Add Row</a>
