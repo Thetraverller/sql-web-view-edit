@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Data</title>
+</head>
+<body>
+    <h1>Data from Tables</h1>
+    {% for table_name, data in tables.items() %}
+        <h2>{{ table_name }}</h2>
+        <table border="1">
+            <tr>
+                {% for column_name in data['columns'] %}
+                    <th>{{ column_name }}</th>
+                {% endfor %}
+            </tr>
+            {% for row in data['rows'] %}
+                <tr>
+                    {% for value in row %}
+                        <td>{{ value }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+        <br>
+    {% endfor %}
+</body>
+</html>

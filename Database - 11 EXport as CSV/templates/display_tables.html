@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Tables</title>
+</head>
+<body>
+    <h1>Tables</h1>
+    <form method="get" action="{{ url_for('display_tables') }}">
+        <input type="text" name="search" placeholder="Search...">
+        <input type="submit" value="Search">
+    </form>
+
+    {% for table_name, data in tables.items() %}
+        <h2>{{ table_name }}</h2>
+
+        <!-- Add a form for bulk actions (e.g., delete and export as CSV) -->
+        <form method="post" action="{{ url_for('perform_bulk_action', table_name=table_name) }}">
+            <input type="submit" value="Delete Selected">
+            
+            <!-- Add a button for exporting selected rows as CSV -->
+            <input type="submit" name="export_csv" value="Export Selected as CSV">
+            
+            <table border="1">
+                <tr>
+                    <!-- Add a column for checkboxes -->
+                    <th>Select</th>
+                    {% for column in data.columns %}
+                        <th>{{ column }}</th>
+                    {% endfor %}
+                    <th>Actions</th>
+                </tr>
+                {% for row in data.rows %}
+                    <tr>
+                        <!-- Add a checkbox for each row -->
+                        <td><input type="checkbox" name="selected_rows" value="{{ row[0] }}"></td>
+                        {% for value in row %}
+                            <td>
+                                <a href="{{ url_for('edit_cell', table_name=table_name, row_id=row[0]|int, column_name=data.columns[loop.index0]) }}">
+                                    {{ value }}
+                                </a>
+                            </td>
+                        {% endfor %}
+                        <td>
+                            <a href="{{ url_for('edit_row', table_name=table_name, row_id=row[0]|int) }}">Edit</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+            <br>
+            <a href="{{ url_for('add_row', table_name=table_name) }}">Add Row</a>
+        </form>
+    {% endfor %}
+
+    <!-- Add the following form to display_tables.html -->
+    <form method="post" action="{{ url_for('create_table') }}">
+        <label for="new_table_name">New Table Name:</label>
+        <input type="text" name="new_table_name" required>
+        <input type="submit" value="Create Table">
+    </form>
+
+</body>
+</html>
